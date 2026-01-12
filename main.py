@@ -1,8 +1,12 @@
 import sys
+from urllib.error import HTTPError
+
 import requests
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout)
 
 from PyQt5.QtCore import Qt # This handles vertical alignment
+from requests import RequestException
+
 
 class WeatherApp(QWidget):
     def __init__(self):
@@ -79,11 +83,37 @@ class WeatherApp(QWidget):
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}" # Note that changes are inline with the
             # above variables.
 
-        response = requests.get(url)
-        data = response.json()
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
 
-        if data["cod"] == 200:
-            self.display_weather(data)
+            if data["cod"] == 200:
+                self.display_weather(data)
+        except requests.exceptions.HTTPError:
+            match response.status_code:
+                case 400:
+                    print("Bad request.\nPlease check your input.")
+                case 401:
+                    print("Unauthorised.\nInvalid API key.")
+                case 403:
+                    print("Forbidden.\nAccess is denied.")
+                case 404:
+                    print("Not found.\nCity not found.")
+                case 500:
+                    print("Internal Server Error.\nPlease try again later.")
+                case 502:
+                    print("Bad gateway.\nInvalid response from the server.")
+                case 503:
+                    print("Service unavailable.\nServer is down.")
+                case 504:
+                    print("Gateway timeout.\nNo response from the server.")
+                case _:
+                    print("HTTP error occurred\n{http_error}")
+
+
+        except requests.exceptions.RequestException:
+            pass
 
     def display_error(self, message):
         pass
