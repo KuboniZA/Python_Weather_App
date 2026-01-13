@@ -60,6 +60,8 @@ class WeatherApp(QWidget):
             }
             QLineEdit#city_input {
                 font-size: 40px;
+                padding: 5px;
+                
             }
             QPushButton#get_weather_button {
                 font-size: 30px;
@@ -130,6 +132,8 @@ class WeatherApp(QWidget):
     def display_error(self, message):
         self.temperature_label.setStyleSheet("font-size: 30px;")
         self.temperature_label.setText(message)
+        self.emoji_label.clear()
+        self.description_label.clear()
 
     def display_weather(self, data):
         self.temperature_label.setStyleSheet("font-size: 75px;")
@@ -154,6 +158,14 @@ class WeatherApp(QWidget):
             return  "🌧️"
         elif 600 <= weather_id <= 622:
             return  "🌨❄️"
+        elif 701 <= weather_id <= 741:
+            return  "🌫️"
+        elif 762 == weather_id:
+            return  "🌋"
+        elif 771 == weather_id:
+            return  "💨"
+        elif 781 == weather_id:
+            return  "🌪️"
         elif 800 == weather_id:
             return  "☀️"
         elif 801 <= weather_id <= 804:
