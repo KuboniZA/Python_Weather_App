@@ -1,5 +1,8 @@
 import sys
 from urllib.error import HTTPError
+import os
+from dotenv import load_dotenv
+
 
 import requests
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout)
@@ -58,7 +61,7 @@ class WeatherApp(QWidget):
             QLineEdit#city_input {
                 font-size: 40px;
             }
-            QPush_button#get_weather_button {
+            QPushButton#get_weather_button {
                 font-size: 30px;
                 font-weight: bold;
             }
@@ -78,7 +81,8 @@ class WeatherApp(QWidget):
         self.get_weather_button.clicked.connect(self.get_weather)
 
     def get_weather(self):
-        api_key = "fe932a1453f712c50eeff2681afa41db"
+        load_dotenv()
+        api_key = os.getenv("API_KEY")
         city = self.city_input.text()
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}" # Note that changes are inline with the
             # above variables.
@@ -154,6 +158,8 @@ class WeatherApp(QWidget):
             return  "☀️"
         elif 801 <= weather_id <= 804:
             return  "☁️️"
+        else:
+            return ""
 
 
 
